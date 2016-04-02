@@ -1,0 +1,372 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Augmented Reality Assignment02
+\end_layout
+
+\begin_layout Author
+Author: Joao Vitor Elias Carvalho | Student Number: 15309326
+\end_layout
+
+\begin_layout Date
+2015/2016 Hilary Term - CS7434 - Trinity College Dublin
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Subsection
+Goal
+\end_layout
+
+\begin_layout Standard
+The goal of the application is to implement a simple Panorama Stitching
+ operation.
+ The input of the application is a set of images found in a specific folder.
+ The objective is to try to stitch all the images in a bigger panorama image.
+ The result image can be shown in a new windows or saved into a new file.
+ We are going to provide options to configure the behavior of the program
+ passing parameters to it.
+\end_layout
+
+\begin_layout Subsection
+Prerequisites
+\end_layout
+
+\begin_layout Standard
+To start reproducing the following application you are going to need to
+ install and configure the following prerequisites, with the right link
+ to the download:
+\end_layout
+
+\begin_layout Standard
+- Python 2.7.10 | https://www.python.org/downloads/
+\end_layout
+
+\begin_layout Standard
+- OpenCV 2.4.12 | http://opencv.org/downloads.html
+\end_layout
+
+\begin_layout Standard
+To use the OpenCV library in the Python environment we need to copy the
+ build for python to the right folder.
+ So you need to move the 
+\begin_inset Quotes eld
+\end_inset
+
+cv2.pyd
+\begin_inset Quotes erd
+\end_inset
+
+ file, that can be found in 
+\begin_inset Quotes eld
+\end_inset
+
+{OPENCV_FOLDER}
+\backslash
+build
+\backslash
+python
+\backslash
+2.7
+\backslash
+x86
+\begin_inset Quotes erd
+\end_inset
+
+, to the folder 
+\begin_inset Quotes eld
+\end_inset
+
+Python27
+\backslash
+Lib
+\backslash
+site-packages
+\begin_inset Quotes erd
+\end_inset
+
+.
+ After that you can use the OpenCV library in Python.
+ Now run the following code using python:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+import cv2
+\end_layout
+
+\begin_layout Plain Layout
+
+print cv.__version__
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If everything went well you are going to see the version of opencv: 2.4.12.
+ Now we are ready to continue.
+\end_layout
+
+\begin_layout Subsection
+Brief Approach
+\end_layout
+
+\begin_layout Standard
+The approach to the application is a Python implementation of a simple panorama
+ stitching algorithm.
+ It is used the functional programming paradigm.
+ We are going to use functions as elements and apply it to types ( images
+ ) using high-order functions.
+ A high-order function is a function that has another function as parameter.
+ We are going to use high-order functions like map that receives a function
+ and a list, then apply that function to every element on the list and store
+ its result in the same list.
+\end_layout
+
+\begin_layout Standard
+Briefly the pipeline consists of the following steps:
+\end_layout
+
+\begin_layout Standard
+1.
+ Load all images to the program
+\end_layout
+
+\begin_layout Standard
+2.
+ Generate features information using the SIFT method.
+\end_layout
+
+\begin_layout Standard
+3.
+ Using the features descriptors, match features between images using some
+ match method.
+\end_layout
+
+\begin_layout Standard
+4.
+ Select the best matches using the ratio criteria.
+\end_layout
+
+\begin_layout Standard
+5.
+ Find the correct homography using the matches.
+\end_layout
+
+\begin_layout Standard
+6.
+ Apply transformation to the images and stitch them together in one image.
+\end_layout
+
+\begin_layout Standard
+7.
+ Keep repeating steps 2 to 6 for every image until is only left one panorama
+ image.
+\end_layout
+
+\begin_layout Standard
+A more detailed explanation of the steps is provided in the Approach Section.
+\end_layout
+
+\begin_layout Section
+Approach
+\end_layout
+
+\begin_layout Subsection
+Theory behind the application
+\end_layout
+
+\begin_layout Standard
+In the case of the panorama stitching, we have two images taken from the
+ same camera that intersects in some part.
+ The idea is to transform the images in order to stitch them together in
+ one big image.
+ We assume that the two images were taken from the same position, that is
+ that does not occurred any or little translation between the images.
+ 
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $x_{1}$
+\end_inset
+
+be a pixel in the first image projected from a 3D point 
+\begin_inset Formula $X$
+\end_inset
+
+ and 
+\begin_inset Formula $x_{2}$
+\end_inset
+
+ be the same projection but in the second image.
+ We are assuming that we know the camera parameters by using some kind of
+ camera calibration.
+ We can denote the camera intrinsics matrix as K.
+ To finalize the pinhole camera model we need to define the rotation and
+ translation matrix.
+\end_layout
+
+\begin_layout Standard
+In this case we can consider both images to be at the origin and not having
+ any translation between them.
+ One of the images can be considered to have no rotation and the other image
+ to use the rotation from the first to its orientation.
+ So we have:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x_{1}=K[I|0]X
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x_{2}=K[R|0]X
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Using this we can find the correct rotation by substituting the first equation
+ in the second.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x_{1}=K*R*K^{-1}*K[I|0]X
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Evaluation and Results
+\end_layout
+
+\begin_layout Subsection
+Results
+\end_layout
+
+\begin_layout Section
+Conclusion
+\end_layout
+
+\begin_layout Subsection
+Future works and Improvements
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-1"
+
+\end_inset
+
+http://www.vision.caltech.edu/bouguetj/calib_doc/htmls/links.html
+\end_layout
+
+\end_body
+\end_document

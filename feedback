@@ -1,0 +1,9 @@
+=====
+- Introduce the subject to the professor before demonstrate the demo.
+- Consider high-level problems challenges.
+- Be specific for the technical problems and solutions that you encountered in the assignment // Don't say that you encoutered problems with opengl/opencv without specific solutions or description of the problems.
+- Don't refer to things like perspective matrix without a citation.
+- Don't simply approach little technical problems with trial and error // Flip image of opencv or matrix because of the different axis between opengl/opencv.
+- OpenCV is robust only with rigid markers // Probably not a good idea just to wave the paper in front of the camera.
+- Problem of the origin between the corners of the chessboard should have been explained.
+- Cite degrees of freedom to solve calibration and how much images do you need to calibrate the camera.
