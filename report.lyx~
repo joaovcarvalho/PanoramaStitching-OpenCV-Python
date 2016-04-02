@@ -299,7 +299,8 @@ be a pixel in the first image projected from a 3D point
 In this case we can consider both images to be at the origin and not having
  any translation between them.
  One of the images can be considered to have no rotation and the other image
- to use the rotation from the first to it orientation.So we have:
+ to use the rotation from the first to its orientation.
+ So we have:
 \end_layout
 
 \begin_layout Standard
@@ -325,9 +326,20 @@ x_{2}=K[R|0]X
 \end_layout
 
 \begin_layout Standard
-Where K is the intrinsic matrix of the camera and X is the 3D point in the
- world.
- In the 
+Using this we can find the correct rotation by substituting the first equation
+ in the second.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x_{1}=K*R*K^{-1}*K[I|0]X
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
