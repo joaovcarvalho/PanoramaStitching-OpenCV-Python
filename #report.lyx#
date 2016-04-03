@@ -271,23 +271,11 @@ After loading all images we need to establish matches between the two images
  Features are the same as corners and we use them identify points of interest
  in a image.
  The method used is SIFT ( Scale Invariant Feature Transform ).
- SIFT features are located at scale-space maxima/minima of a difference
- of Gaussian function [Lowe].
- Using SIFT features we can have a robust method for identifying features
- and use this to match them even with some kind of zoom or rotation.
- 
+ SIFT features are located a 
 \end_layout
 
 \begin_layout Subsection
-Matching features
-\end_layout
-
-\begin_layout Subsection
-Ratio criteria
-\end_layout
-
-\begin_layout Subsection
-Homography
+Theory behind the application
 \end_layout
 
 \begin_layout Standard
