@@ -109,3 +109,10 @@ if( len(sys.argv) > 1):
             filenames = cases.get("0", None)
 else:
     filenames = cases.get("0", None)
+
+filenames = filenames[::-1]
+
+if __name__ == "__main__":
+  result = stitchImages(filenames)
+  showImage(result)
+  cv.waitKey(0)

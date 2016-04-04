@@ -82,9 +82,23 @@ Author: Joao Vitor Elias Carvalho | Student Number: 15309326
 \end_layout
 
 \begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset CommandInset toc
 LatexCommand tableofcontents
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
 \end_inset
 
 
@@ -270,9 +284,20 @@ After loading all images we need to establish matches between the two images
  We are going to use features to achieve this.
  Features are the same as corners and we use them identify points of interest
  in a image.
- The method used is SIFT ( Scale Invariant Feature Transform ).
+ The method used is SIFT (Scale Invariant Feature Transform).
  SIFT features are located at scale-space maxima/minima of a difference
- of Gaussian function [Lowe].
+ of Gaussian function.
+ This approach transforms an image into a large collection of local feature
+ vectors, each of which is invariant to image translation, scaling, and
+ rotation, and partially invariant to illumination changes and affine or
+ 3D projection
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-2"
+
+\end_inset
+
+.
  Using SIFT features we can have a robust method for identifying features
  and use this to match them even with some kind of zoom or rotation.
  
@@ -282,8 +307,36 @@ After loading all images we need to establish matches between the two images
 Matching features
 \end_layout
 
+\begin_layout Standard
+We could some methods for matching features in this case I used a simple
+ Brute Force Matcher as we needed a simple solution.
+ The Brute Force Matcher calculates the euclidean difference in space features
+ for every pair of features.
+ Then we get the greatest 
+\begin_inset Formula $k$
+\end_inset
+
+ of matches.
+ This process is sped up using a K-d tree in the feature space.
+\end_layout
+
 \begin_layout Subsection
 Ratio criteria
+\end_layout
+
+\begin_layout Standard
+With the 
+\begin_inset Formula $k$
+\end_inset
+
+ matches from the last step we apply the ratio criteria to check if the
+ match is good enough.
+ With the ordered array of matches we compare every match with the next
+ one and check for the following condition: 
+\begin_inset Formula $distance_{first}<0.75*distance_{second}$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -302,7 +355,7 @@ In the case of the panorama stitching, we have two images taken from the
 
 \begin_layout Standard
 Let 
-\begin_inset Formula $x_{1}$
+\begin_inset Formula $x_{0}$
 \end_inset
 
 be a pixel in the first image projected from a 3D point 
@@ -310,7 +363,7 @@ be a pixel in the first image projected from a 3D point
 \end_inset
 
  and 
-\begin_inset Formula $x_{2}$
+\begin_inset Formula $x_{1}$
 \end_inset
 
  be the same projection but in the second image.
@@ -332,7 +385,7 @@ In this case we can consider both images to be at the origin and not having
 \begin_layout Standard
 \begin_inset Formula 
 \[
-x_{1}=K[I|0]X
+x_{0}=K[I|0]X
 \]
 
 \end_inset
@@ -343,7 +396,7 @@ x_{1}=K[I|0]X
 \begin_layout Standard
 \begin_inset Formula 
 \[
-x_{2}=K[R|0]X
+x_{1}=K[R|0]X
 \]
 
 \end_inset
@@ -352,9 +405,7 @@ x_{2}=K[R|0]X
 \end_layout
 
 \begin_layout Standard
-Using this we can find the correct rotation by substituting the first equation
- in the second.
- 
+Using this we can transform the second equation in this form:
 \end_layout
 
 \begin_layout Standard
@@ -366,6 +417,81 @@ x_{1}=K*R*K^{-1}*K[I|0]X
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+And knowing that part of the right side is equal to 
+\begin_inset Formula $x_{0}$
+\end_inset
+
+ we can substitute.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x_{1}=K*R*K^{-1}*x_{0}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x_{1}=H*x_{0}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This creates a relation between to images observations that we can use to
+ solve for H, that is know as the homography matrix.
+ This matrix is a 3x3 matrix.
+ Each correspondence gives us 2 equations and we have 9 degrees of freedom,
+ so we need at least 9 equations which give us 5 or more matches.
+ CHECK THIS UP!
+\end_layout
+
+\begin_layout Standard
+The actual method implemented in OpenCV for estimating the Homography uses
+ RANSAC ( Random sample consensus ).
+ In the case of panoramas we select sets of 
+\begin_inset Formula $r=4$
+\end_inset
+
+ feature correspondences and compute the homography H between them using
+ direct linear transformation method ( DLT) 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-3"
+
+\end_inset
+
+.
+ This process repeats for 
+\begin_inset Formula $n=100$
+\end_inset
+
+ trials.The method continues to find the estimation that has the best consensus
+ with the data available.
+ 
+\end_layout
+
+\begin_layout Standard
+After finding the 
+\begin_inset Formula $H$
+\end_inset
+
+ matrix we use it to wrap one image and then we blend them together in one
+ single panorama.
+ Now we have a new image and we use that image to apply the same process
+ to the rest of the images.
 \end_layout
 
 \begin_layout Subsection
@@ -388,6 +514,19 @@ Conclusion
 Future works and Improvements
 \end_layout
 
+\begin_layout Standard
+Blending the images together in a smooth way is something that can be achieved
+ using some kind of linear blending or multi-band blending.
+ We can also apply gain compensation.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
@@ -395,7 +534,31 @@ key "key-1"
 
 \end_inset
 
-http://www.vision.caltech.edu/bouguetj/calib_doc/htmls/links.html
+CS7034 - Augmented Reality - Lecture notes
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-2"
+
+\end_inset
+
+http://www.cs.ubc.ca/~lowe/papers/iccv99.pdf
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-3"
+
+\end_inset
+
+Matthew Brown and David G.
+ Lowe, "Automatic panoramic image stitching using invariant features," Internati
+onal Journal of Computer Vision, 74, 1 (2007), pp.
+ 59-73.
+ http://www.cs.ubc.ca/~lowe/papers/07brown.pdf
 \end_layout
 
 \end_body
