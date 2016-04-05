@@ -1,5 +1,7 @@
 from flask import Flask, request, render_template
 from stitching import stitchImages, saveImage
+from nocache import nocache
+import uuid
 app = Flask(__name__)
 
 def processImages(request):
@@ -13,10 +15,13 @@ def processImages(request):
 
   # Make the stitching
   result = stitchImages( filenames )
-  saveImage("static/result.jpg", result)
-  return render_template("result.html", result="result.jpg")
+  result_filename = str(uuid.uuid1())
+  print ("Result name: " + result_filename)
+  saveImage("static/"+(result_filename)+".jpg", result)
+  return render_template("result.html", result= (result_filename + ".jpg") )
 
 @app.route('/', methods=['GET', 'POST'])
+@nocache
 def main():
     if request.method == 'POST':
         return processImages(request)

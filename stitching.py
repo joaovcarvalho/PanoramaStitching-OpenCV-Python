@@ -56,12 +56,17 @@ def matchFeatures(bf,imgA, imgB):
         width       = imgB.gray.shape[1]
         height      = imgB.gray.shape[0]
         max_width   = size[0]
-        #beta        = 5.0
 
-        #resultCopy  =  result.copy()
-        #resultCopy[:0] = 0
         result[ 0:height, 0:width] = imgB.original
-        #result = cv.addWeighted(result, 0.7, resultCopy, 0.5, 0.0)
+
+        """
+        result_width  = size[0] * 2
+        result_height = size[1] * 2
+        panorama = np.zeros((result_height,result_width,3), np.uint8)
+        panorama[ height:(height + result.shape[0]) , width:(width + result.shape[1]) ] = result
+        cv.imshow("LOL", panorama)
+        cv.waitKey(0)
+        """
 
         # Returns the image resulting and computed with corners in case
         # there is more matching to be done
@@ -109,8 +114,6 @@ if( len(sys.argv) > 1):
             filenames = cases.get("0", None)
 else:
     filenames = cases.get("0", None)
-
-filenames = filenames[::-1]
 
 if __name__ == "__main__":
   result = stitchImages(filenames)

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <div> <img src="{{ url_for('static', filename='result.jpg') }} " alt="" /> </div>
+    <div> <img src="{{ url_for('static', filename=result) }} " alt="" /> </div>
     <a href="{{ url_for('main') }}" >
      <button type="button" class="btn btn-primary">Back</button> 
     </a>

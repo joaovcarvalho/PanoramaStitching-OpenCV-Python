@@ -141,6 +141,17 @@ To start reproducing the following application you are going to need to
 \end_layout
 
 \begin_layout Standard
+- Flask ( Optional for the web application )
+\end_layout
+
+\begin_layout Standard
+I used the VirtualEnv for Python that creates an entirely new environment
+ to install the requisites.
+ This is optional as you can install everything right into your global environme
+nt.
+\end_layout
+
+\begin_layout Standard
 To use the OpenCV library in the Python environment we need to copy the
  build for python to the right folder.
  So you need to move the 
@@ -207,6 +218,10 @@ print cv.__version__
 \begin_layout Standard
 If everything went well you are going to see the version of opencv: 2.4.12.
  Now we are ready to continue.
+\end_layout
+
+\begin_layout Standard
+Optionally you can install Flask to use your code in a web application.
 \end_layout
 
 \begin_layout Subsection
@@ -453,9 +468,7 @@ x_{1}=H*x_{0}
 This creates a relation between to images observations that we can use to
  solve for H, that is know as the homography matrix.
  This matrix is a 3x3 matrix.
- Each correspondence gives us 2 equations and we have 9 degrees of freedom,
- so we need at least 9 equations which give us 5 or more matches.
- CHECK THIS UP!
+ 
 \end_layout
 
 \begin_layout Standard
@@ -498,12 +511,62 @@ After finding the
 Web Application
 \end_layout
 
+\begin_layout Standard
+The web application was created using the micro-framework Flask for Python.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Flask is a microframework for Python based on Werkzeug, Jinja 2 and good
+ intentions.
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-4"
+
+\end_inset
+
+.
+ Flask was chosen because it has everything needed for this project.
+ Flask is easy to setup and start working with.
+\end_layout
+
 \begin_layout Section
 Evaluation and Results
 \end_layout
 
 \begin_layout Subsection
 Results
+\end_layout
+
+\begin_layout Standard
+We were able to create a simple web application that stitches images together
+ as long as its in the right order.
+ The results were good, but still we have much room for improvement.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/report_01.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/report_02.png
+	scale 50
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -517,7 +580,23 @@ Future works and Improvements
 \begin_layout Standard
 Blending the images together in a smooth way is something that can be achieved
  using some kind of linear blending or multi-band blending.
- We can also apply gain compensation.
+ We can also apply gain compensation to smooth the intensity of the pixels
+ all over the image so the edges where the images intercept don't show up
+ so strong.
+\end_layout
+
+\begin_layout Standard
+The program still needs some ordering in the images so it can work well
+ and show the results correctly.
+ One possible improvement is to try to automatically select the order of
+ the images and which image connects with the other.
+\end_layout
+
+\begin_layout Standard
+As we don't have a correct calculation of the size of the result image,
+ we have doubled the image size to prevent any problem.
+ The improvement could be correctly calculating the size of the image.
+ Also we can straight up the image using some algorithm.
 \end_layout
 
 \begin_layout Standard
@@ -559,6 +638,16 @@ Matthew Brown and David G.
 onal Journal of Computer Vision, 74, 1 (2007), pp.
  59-73.
  http://www.cs.ubc.ca/~lowe/papers/07brown.pdf
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-4"
+
+\end_inset
+
+http://flask.pocoo.org/
 \end_layout
 
 \end_body
