@@ -12,6 +12,9 @@ class Image:
         keypoints = None
         descriptors = None
 
+        def __str__(self):
+          return self.name
+
 def createImage(directory,filename):
         img = Image()
         img.name = filename
@@ -19,7 +22,7 @@ def createImage(directory,filename):
 
         maxSize = 750
         # Need this for images too large otherwise you get Not enough memory errors
-        while(img.original.shape[0] > 500 or img.original.shape[1] > 500):
+        while(img.original.shape[0] > maxSize or img.original.shape[1] > maxSize):
             img.original     = cv.resize(img.original, (img.original.shape[1]/2, img.original.shape[0]/2) )
 
         img.gray = cv.cvtColor(img.original, cv.COLOR_BGR2GRAY)
@@ -34,6 +37,8 @@ def generateCorners(img):
         img.keypoints = kp
         img.descriptors = des
         return img
+
+count = 0
 
 def matchFeatures(bf,imgA, imgB):
         matches     = bf.knnMatch(imgA.descriptors, imgB.descriptors, k=2)
@@ -59,39 +64,74 @@ def matchFeatures(bf,imgA, imgB):
 
         result[ 0:height, 0:width] = imgB.original
 
-        """
-        result_width  = size[0] * 2
-        result_height = size[1] * 2
-        panorama = np.zeros((result_height,result_width,3), np.uint8)
-        panorama[ height:(height + result.shape[0]) , width:(width + result.shape[1]) ] = result
-        cv.imshow("LOL", panorama)
-        cv.waitKey(0)
-        """
+        result_gray  = cv.cvtColor( result, cv.COLOR_BGR2GRAY)
+        _, tresh     = cv.threshold(result_gray, 1, 255, cv.THRESH_BINARY)
+        contours, _ = cv.findContours(tresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
+        max_area     = 0
+        best_rect    = (0,0,0,0)
+
+        for contour in contours:
+          x,y,w,h = cv.boundingRect(contour)
+
+          deltaHeight = h - y
+          deltaWidth  = w - x
+
+          area = deltaWidth * deltaHeight
+
+          if( area > max_area and deltaHeight > 0 and deltaWidth > 0):
+            max_area  = area
+            best_rect = (x,y,w,h)
+
+        if( max_area > 0):
+          crop_image = result[best_rect[1]:best_rect[1]+best_rect[3],
+                        best_rect[0]:best_rect[0]+best_rect[2]]
+          result = crop_image
 
         # Returns the image resulting and computed with corners in case
         # there is more matching to be done
         imageResult = Image()
         imageResult.original = result
-        imageResult.gray = cv.cvtColor( result, cv.COLOR_BGR2GRAY)  
+        imageResult.gray = cv.cvtColor( result, cv.COLOR_BGR2GRAY)
         imageResult.gray = cv.equalizeHist(imageResult.gray)
         imageResult = generateCorners(imageResult)
         imageResult.name = "(" + imgA.name + "," +imgB.name + ")"
         return imageResult
+
+def orderImages(images, bf):
+  # ASSERT THAT IS IMAGES THAT U RECEIVE BRUH
+  result = []
+  result.append(images[0])
+  del images[0]
+  limit = len(images)
+  for i in range(1, limit + 1):
+    previous    = result[ i - 1 ]
+    current     = images[ 0 ]
+    mostMatches = 0
+
+    for image in images:
+      if( previous != image):
+        matches     = bf.knnMatch(previous.descriptors, image.descriptors, k=2)
+        if len(matches) > mostMatches: 
+          mostMatches = len(matches)
+          current     = image
+
+    images.remove(current)
+    result.append(current)
+
+  #print ",".join(map(str, result))
+  return result
 
 def stitchImages(filenames):
   # Create images objcets using createImage function that receives the directory and filename
   # Partial application for the directory
   files = map( partial(createImage, "images/") , filenames)
 
-  # Show all images with showImage function, maps over array
-  #map(showImage, files)
-
   # generate images with keypoints and descriptors information
-  imagesWithKeypoints = map(generateCorners, files)
+  orderedImages = orderImages(map(generateCorners, files), cv.BFMatcher())
 
   # Match features and align images using BFMatcher
   # TODO: Improve matcher with other kind of matcher ?
-  resultImage = reduce( partial(matchFeatures, cv.BFMatcher()) , imagesWithKeypoints)
+  resultImage = reduce( partial(matchFeatures, cv.BFMatcher()) , orderedImages)
 
   # Show result image
   # showImage( resultImage )

@@ -546,12 +546,29 @@ Results
 We were able to create a simple web application that stitches images together
  as long as its in the right order.
  The results were good, but still we have much room for improvement.
- 
+ Below you can see the interface and some examples:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Graphics
 	filename images/report_01.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/01.jpg
+	scale 50
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/02.jpg
 	scale 50
 
 \end_inset
@@ -569,8 +586,60 @@ We were able to create a simple web application that stitches images together
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/cel_01.jpg
+	scale 2.5
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/cel_02.jpg
+	scale 2.5
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/cel_03.jpg
+	scale 2.5
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Result:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/report_03.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Conclusion
+\end_layout
+
+\begin_layout Standard
+In the end I was able to create a simple web app to use as panorama stitching
+ tool.
+ There is still much room for improvement and I want to continue working
+ and improving it.
 \end_layout
 
 \begin_layout Subsection
