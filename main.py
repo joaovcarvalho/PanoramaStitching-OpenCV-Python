@@ -16,6 +16,8 @@ def processImages(request):
   filenames.append(loadAndSaveImage(request.files["02"]))
   filenames.append(loadAndSaveImage(request.files["03"]))
 
+  filenames = filter(None, filenames)
+
   # Make the stitching
   result = stitchImages( filenames )
   result_filename = str(uuid.uuid1())

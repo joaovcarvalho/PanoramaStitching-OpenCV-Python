@@ -222,6 +222,7 @@ If everything went well you are going to see the version of opencv: 2.4.12.
 
 \begin_layout Standard
 Optionally you can install Flask to use your code in a web application.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -352,6 +353,20 @@ With the
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Subsection
+Image ordering
+\end_layout
+
+\begin_layout Standard
+Using the matches that are good enough we can order the images to stitch
+ only the ones that have most matches.
+ The algorithm is simple.
+ It starts by initializing with the first image in the array.
+ The next is image is the one that has most matches with the first, and
+ so on.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -532,6 +547,7 @@ key "key-4"
 .
  Flask was chosen because it has everything needed for this project.
  Flask is easy to setup and start working with.
+ 
 \end_layout
 
 \begin_layout Section
@@ -578,8 +594,7 @@ We were able to create a simple web application that stitches images together
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename images/report_02.png
-	scale 50
+	filename images/report_04.png
 
 \end_inset
 
@@ -623,8 +638,7 @@ Result:
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename images/report_03.png
-	scale 50
+	filename images/report_05.png
 
 \end_inset
 
@@ -633,6 +647,13 @@ Result:
 
 \begin_layout Section
 Conclusion
+\end_layout
+
+\begin_layout Standard
+In the end I was able to create a simple web app to use as panorama stitching
+ tool.
+ There is still much room for improvement and I want to continue working
+ and improving it.
 \end_layout
 
 \begin_layout Subsection
@@ -645,20 +666,6 @@ Blending the images together in a smooth way is something that can be achieved
  We can also apply gain compensation to smooth the intensity of the pixels
  all over the image so the edges where the images intercept don't show up
  so strong.
-\end_layout
-
-\begin_layout Standard
-The program still needs some ordering in the images so it can work well
- and show the results correctly.
- One possible improvement is to try to automatically select the order of
- the images and which image connects with the other.
-\end_layout
-
-\begin_layout Standard
-As we don't have a correct calculation of the size of the result image,
- we have doubled the image size to prevent any problem.
- The improvement could be correctly calculating the size of the image.
- Also we can straight up the image using some algorithm.
 \end_layout
 
 \begin_layout Standard
