@@ -98,7 +98,6 @@ def matchFeatures(bf,imgA, imgB):
         return imageResult
 
 def orderImages(images, bf):
-  # ASSERT THAT IS IMAGES THAT U RECEIVE BRUH
   result = []
   result.append(images[0])
   del images[0]
@@ -111,8 +110,12 @@ def orderImages(images, bf):
     for image in images:
       if( previous != image):
         matches     = bf.knnMatch(previous.descriptors, image.descriptors, k=2)
-        if len(matches) > mostMatches: 
-          mostMatches = len(matches)
+        goodMatches = 0
+        for m,n in matches:
+                if(m.distance < 0.75*n.distance):
+                  goodMatches = goodMatches + 1
+        if goodMatches > mostMatches: 
+          mostMatches = goodMatches
           current     = image
 
     images.remove(current)
@@ -127,7 +130,10 @@ def stitchImages(filenames):
   files = map( partial(createImage, "images/") , filenames)
 
   # generate images with keypoints and descriptors information
+  print filenames
   orderedImages = orderImages(map(generateCorners, files), cv.BFMatcher())
+
+  orderedImages = orderedImages[::-1]
 
   # Match features and align images using BFMatcher
   # TODO: Improve matcher with other kind of matcher ?

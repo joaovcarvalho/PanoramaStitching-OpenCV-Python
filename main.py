@@ -4,14 +4,17 @@ from nocache import nocache
 import uuid
 app = Flask(__name__)
 
+def loadAndSaveImage(image_file):
+    if image_file :
+      image_file.save("images/" + image_file.filename)
+    return image_file.filename
+
 def processImages(request):
   filenames = []
   # Saves all images
-  for name in request.files:
-    image_file = request.files[name]
-    if image_file :
-      filenames.append(image_file.filename)
-      image_file.save("images/" + image_file.filename)
+  filenames.append(loadAndSaveImage(request.files["01"]))
+  filenames.append(loadAndSaveImage(request.files["02"]))
+  filenames.append(loadAndSaveImage(request.files["03"]))
 
   # Make the stitching
   result = stitchImages( filenames )
